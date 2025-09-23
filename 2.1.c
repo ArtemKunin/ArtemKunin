@@ -20,7 +20,6 @@ double getPlo(const double x, const double y);
 *@param x выбранный пользователем первый катет
 *@param y выбранный пользователем второй катет
 *@param choice выбранный пользователем параметр выбора периметра или площади
-*@param end выбранный пользователем параметр выбора продолжать программу или нет
 *@return ввозвращает 0, если программа выполнена корректно
 */
 int main()
@@ -28,9 +27,6 @@ int main()
     double x;
     double y;
     int choice;
-    int end;
-    do 
-    {
         printf("Выберите, что хотите посчитать:\nПеример - 1\nПлощадь - 2\n");
     scanf("%d", &choice);
         if (choice == 1)
@@ -55,10 +51,6 @@ int main()
     {
         printf("Неверный выбор!\n");
     }
-    printf("Хотите продолжить?\nДа-1\nНет - Любая клавиша\n");
-    scanf("%d",&end);
-    }
-    while (end == 1);
     return 0;
 }
 double getPer(const double x, const double y)
