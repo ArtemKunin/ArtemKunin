@@ -7,12 +7,12 @@
 *@param x входное значение аргумента
 *@return возвращает рассчитанное значение выбранной функции
 */
-double Func(const double x);
+double func(const double x);
 /*
 *@brief Считывает значение, введенное с клавиатуру с проверкой ввода
 *@return считанное значение
 */
-double Value();
+double value();
 /*
 *@brief Точка входа в программу
 *@param x выбранный пользователем значение аргумента
@@ -26,18 +26,18 @@ int main()
     printf("y = e^(a*x) * cos(x), при x > 2\n");
     printf("Константа a = 2.0\n\n");
     printf("Введите значение:");
-    double x = Value();
-    double result = Func(x);
+    double x = value();
+    double result = func(x);
     printf("Результат: y(%.2f) = %.2f\n", x, result);
     return 0;
     
 }
 
-double Func(const double x)
+double func(const double x)
 {
     const double a = 2.0;
     
-    if (x < 1.0 - DBL_EPSILON)
+    if (x < 1.0 + DBL_EPSILON)
     {
         
         return 1.0;
@@ -54,7 +54,7 @@ double Func(const double x)
     }
 }
 
-double Value()
+double value()
 {
     double value = 0;
     if (!scanf("%lf",&value))
