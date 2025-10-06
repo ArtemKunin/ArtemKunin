@@ -1,63 +1,92 @@
 #define _USE_MATH_DEFINES
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
+#include <float.h>
 /*
 *@brief Рассчитывает периметр треугольника
 *@param x первый катет треугольника
 *@param y второй катет треугольника
 *@return возвращает рассчитанный периметр
 */
-double getPer(const double x, const double y);
+double getper(const double x, const double y);
 /*
 *@brief Рассчитывает площадь треугольника
 *@param x первый катет треугольника
 *@param y второй катет треугольника
 *@return возвращает рассчитанную площадь
 */
-double getPlo(const double x, const double y);
+double getplo(const double x, const double y);
+/**
+@brief perimetr - периметр прямоугольника
+@brief ploshad - площадь прямоугольника
+*/
+enum {perimetr,ploshad};
+/*
+*@brief Считывает значение, введенное с клавиатуру с проверкой ввода
+*@return считанное значение
+*/
+double value();
+/*
+ * @brief проверяет,что переменная положительная
+ * @param value значение проверяемой переменной
+ */
+void checkvalue(const double value);
 /*
 *@brief Точка входа в программу
 *@param x выбранный пользователем первый катет
 *@param y выбранный пользователем второй катет
-*@param choice выбранный пользователем параметр выбора периметра или площади
-*@return ввозвращает 0, если программа выполнена корректно
+*@return возвращает 0, если программа выполнена корректно
 */
 int main()
 {
-    double x;
-    double y;
-    int choice;
-        printf("Выберите, что хотите посчитать:\nПеример - 1\nПлощадь - 2\n");
-    scanf("%d", &choice);
-        if (choice == 1)
+    printf("Введите длину первого катета:");
+    double x = value();
+    checkvalue(x);
+    printf("Введите длину второго катета:");
+    double y = value();
+    checkvalue(y);
+    printf("Выберите, что хотите посчитать: %d - периметр, %d - плоащдь\n",perimetr,ploshad);
+    int choice = (int) value();
+    switch (choice)
     {
-        printf("Введите данные:\n");
-        printf("Первый катет:");
-        scanf("%lf", &x);
-        printf("Второй катет:");
-        scanf("%lf", &y);
-        printf("Периметр треугольника равен %.2lf\n", getPer(x, y));
+        case perimetr:
+            printf("Периметр равен %.2lf\n",getper(x,y));
+            break;
+        case ploshad:
+            printf("Площадь равна %.2lf\n",getplo(x,y));
+            break;
+        default:
+            printf("Вы ввели неверное значение!");
+            abort();
     }
-    else if (choice == 2)
-    {
-        printf("Введите данные:\n");
-        printf("Первый катет:");
-        scanf("%lf",&x);
-        printf("Второй катет:");
-        scanf("%lf",&y);
-        printf("Площадь треугольника равен %.2lf!\n",getPlo(x,y));
-    }
-    else
-    {
-        printf("Неверный выбор!\n");
-    }
+    
     return 0;
+    
 }
-double getPer(const double x, const double y)
+double value()
+{
+    double value = 0;
+    if (!scanf("%lf",&value))
+    {
+        printf("Ошибка! Введено неверное значение!\n");
+        abort();
+    }
+    return value;
+}
+void checkvalue(const double value)
+{
+    if (value <= 0 + __DBL_EPSILON__ )
+    {
+        printf("Число должно быть положительным!\n");
+        abort();
+    }
+}
+double getper(const double x, const double y)
 {
     return (x + y) + sqrt(pow(x, 2) + pow(y, 2));
 }
-double getPlo(const double x,const double y)
+double getplo(const double x,const double y)
 {
     return 1.0 / 2 * x * y;
 }
