@@ -18,8 +18,8 @@ double getper(const double x, const double y);
 */
 double getplo(const double x, const double y);
 /**
-@brief perimetr - периметр прямоугольника
-@brief ploshad - площадь прямоугольника
+@brief perimetr - периметр треугольника
+@brief ploshad - площадь треугольника
 */
 enum {perimetr,ploshad};
 /*
