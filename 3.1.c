@@ -10,29 +10,28 @@
 double value();
 /**
 *@brief Рассчитывает значение по заданной функции
-*@param x значение
-*@return рассчитанное значение
+*@param x значение переменной
+*@return рассчитанное значение переменной
 */
 double func(const double x);
 /**
- * @brief проверяет, что шаг не нулевой
- * @param step значение шага
+ * @brief проверяет,что переменная положительная
+ * @param step значение проверяемой переменной
  */
 void steps(const double step);
 /**
- * @brief проверяет, следует ли продолжать табулирование
- * @param x текущее значение x
- * @param end конечное значение
- * @param step шаг табулирования
- * @return true если следует, иначе false
+ * @brief проверяет, принадлежит ли значение аргумента функции
+ * её области определения
+ * @param x - аргумент функции
+ * @return true, если аргумент принадлежит ООФ, иначе false
  */
-bool cont(const double x,const double end,const double step);
+bool check(const double x);
 /**
  * @brief Точка входа в программу
- * @param start выбранное пользователем начальное значение функции
- * @param end выбранное пользователем конечное значение функции
- * @param step выбранный пользователем шаг функции
- * @return возвращает 0, если программа выполнена корректно, иначе 0
+ * @param start начальное значение функции
+ * @param end конечное значение функции
+ * @param step значение шага функции
+ * @return 0, если программа выполнена корректно, иначе 1
  */
 int main()
 {
@@ -44,11 +43,18 @@ int main()
     double step = value();
     steps(step);
     double x = start;
-    while (cont(x,end,step))
-    {
-        printf("x = %.2lf, y = %.4lf\n",x,func(x));
-        x = x + step;
-    }
+    while (x < end + DBL_EPSILON)
+	{
+		if (check(x))
+		{
+			printf("x = %.2lf, y = %.4lf\n", x, func(x));
+		}
+		else
+		{
+			printf("x = %.2lf, не принадлежит области определения функции\n", x);
+		}
+		x = x + step;
+	}
     return 0;
 }
 double value()
@@ -63,24 +69,17 @@ double value()
 }
 void steps(const double step)
 {
-    if (fabs(step) <= DBL_EPSILON)
-    {
-        printf("Шаг не должен быть нулевым!\n");
-        abort();
-    }
+    if (step <= DBL_EPSILON)
+	{
+		printf("Ошибка! Шаг должен быть положительным!\n");
+		abort();
+	}
 }
 double func(const double x)
 {
     return 0.29 * pow(x,3) + x - 1.2502;
 }
-bool cont(const double x,const double end,const double step) 
+bool check(const double x)
 {
-    if (step > 0) 
-    {
-        return x < end + DBL_EPSILON;
-    } 
-    else 
-    {
-        return x > end - DBL_EPSILON;
-    }
+	return x >= 0;
 }
