@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-/*
-*@brief Проверяет пройдет ли через отверстие кирпич
+#include <stdbool.h>
+#include <float.h>
+/**
+*@brief Проверяет пройдет ли кирпич через отверстие
 *@param x первая сторона кирпича
 *@param y вторая сторона кирпича
 *@param z третья сторона кирпича
@@ -10,18 +12,18 @@
 *@param s вторая сторона отверстия
 *@return Возвращает рассчитанную проверку
 */
-double func(const double x,const double y,const double z,const double r,const double s);
-/*
+bool func(const double x,const double y,const double z,const double r,const double s);
+/** 
 *@brief Считывает значение, введенное с клавиатуру с проверкой ввода
 *@return считанное значение
 */
 double value();
-/*
+/** 
  * @brief проверяет,что переменная положительная
  * @param value значение проверяемой переменной
  */
 void checkvalue(const double value);
-/*
+/** 
 *@brief Точка входа в программу
 *@param x выбранный вользователем значение первой стороны кирпича
 *@param y выбранный вользователем значение второй стороны кирпича
@@ -47,24 +49,20 @@ int main()
     printf("Введите значение стороны отверстия s:");
     double s = value();
     checkvalue(s);
-    func(x, y, z, r, s);
-    return 0;
-
-}
-double func(const double x,const double y,const double z,const double r,const double s)
-{
-    double result;
-    if ((x <= r && y <= s) || (x <= s && y <= r) || (y <= r && z <= s) || (y <= s && z <= r) || (x <= r && z <= s) || (x <= s && z <= r))
+    if (func(x, y, z, r, s))
     {
-        printf("Кирпич пройдет через отверстие\n");
-        result = 1;
+        printf("Кирпич пройдет через отверстие!\n");
     }
     else
     {
-        printf("Кирпич не пройдет через отверстие\n");
-        result = 0;
+        printf("Кирпич не пройдет через отверстие!\n");
     }
-    return result;
+    return 0;
+
+}
+bool func(const double x,const double y,const double z,const double r,const double s)
+{
+    return (x <= r && y <= s) || (x <= s && y <= r) || (y <= r && z <= s) || (y <= s && z <= r) || (x <= r && z <= s) || (x <= s && z <= r);
 }
 double value()
 {
@@ -78,7 +76,7 @@ double value()
 }
 void checkvalue(const double value)
 {
-    if (value <= 0 + __DBL_EPSILON__ )
+    if (value <= 0 + DBL_EPSILON )
     {
         printf("Число должно быть положительным!\n");
         abort();
