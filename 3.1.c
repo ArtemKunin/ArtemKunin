@@ -20,13 +20,6 @@ double func(const double x);
  */
 void steps(const double step);
 /**
- * @brief проверяет, принадлежит ли значение аргумента функции
- * её области определения
- * @param x - аргумент функции
- * @return true, если аргумент принадлежит ООФ, иначе false
- */
-bool check(const double x);
-/**
  * @brief Точка входа в программу
  * @param start начальное значение функции
  * @param end конечное значение функции
@@ -45,15 +38,8 @@ int main()
     double x = start;
     while (x < end + DBL_EPSILON)
 	{
-		if (check(x))
-		{
-			printf("x = %.2lf, y = %.4lf\n", x, func(x));
-		}
-		else
-		{
-			printf("x = %.2lf, не принадлежит области определения функции\n", x);
-		}
-		x = x + step;
+		printf("x = %.2lf, y = %.4lf\n", x, func(x));
+        x = x + step;
 	}
     return 0;
 }
@@ -78,8 +64,4 @@ void steps(const double step)
 double func(const double x)
 {
     return 0.29 * pow(x,3) + x - 1.2502;
-}
-bool check(const double x)
-{
-	return x >= 0;
 }
