@@ -11,30 +11,31 @@ int Value();
 
 /**
  * @brief Получение размера массива
+ * @param message сообщение пользователю
  * @return Размер массива
  */
-size_t getSize();
+size_t getSize(char* message);
 
 /**
  * @brief Заполнение массива с клавиатуры
  * @param arr Указатель на массив
  * @param size Размер массива
  */
-void fillArray(int* arr, size_t size);
+void fillArray(int* arr,const size_t size);
 
 /**
  * @brief Заполнение массива случайными числами в диапазоне [-15;15]
  * @param arr Указатель на массив
  * @param size Размер массива
  */
-void fillRandom(int* arr, size_t size);
+void fillRandom(int* arr,const size_t size);
 
 /**
  * @brief Вывод массива на экран
  * @param arr Указатель на массив
  * @param size Размер массива
  */
-void printArray(int* arr, size_t size);
+void printArray(const int* arr,const size_t size);
 
 /**
  * @brief Нахождение произведения четных элементов массива
@@ -42,14 +43,14 @@ void printArray(int* arr, size_t size);
  * @param size Размер массива
  * @return Произведение четных элементов
  */
-int productEven(int* arr, size_t size);
+int PolElements(const int* arr, const size_t size);
 
 /**
  * @brief Замена элементов с нечетными индексами на квадраты их индексов
  * @param arr Указатель на массив
  * @param size Размер массива
  */
-void replaceOddIndex(int* arr, size_t size);
+void Odd(int* arr,const size_t size);
 
 /**
  * @brief Проверка наличия положительных элементов, делящихся на k с остатком 2
@@ -58,8 +59,11 @@ void replaceOddIndex(int* arr, size_t size);
  * @param k Делитель
  * @return 1 - если есть такие элементы, 0 - если нет
  */
-int checkPositiveRemainder(int* arr, size_t size, int k);
-
+int Positive(const int* arr,const size_t size,const int k);
+/**
+ * @brief RANDOM - Зполнение рандомными элементами
+ * @brief MANUAL - Зполнение вручную
+ */
 enum {RANDOM = 1, MANUAL};
 /**
  * @brief Точка входа в программу
@@ -67,8 +71,7 @@ enum {RANDOM = 1, MANUAL};
  */
 int main()
 {
-    printf("Введите размер массива:  ");
-    size_t size = getSize();
+    size_t size = getSize("Введите размер массива:");
     int* arr = malloc(size * sizeof(int));
     if (arr == NULL)
     {
@@ -76,7 +79,7 @@ int main()
         exit(1);
     }
     printf("Выберите способ заполнения массива:\n"
-           "%d - случайными числами, %d - вручную: ", RANDOM, MANUAL);
+           "%d - случайными числами, %d - вручную:", RANDOM, MANUAL);
     int choice = Value();
     switch(choice)
     {
@@ -87,35 +90,28 @@ int main()
             fillArray(arr, size);
             break;
         default:
-            printf("Ошибка");
+            printf("Ошибка!\n");
             free(arr);
             exit(1);
     }
 
     printf("Исходный массив: ");
     printArray(arr, size);
-    
-    int product = productEven(arr, size);
-    printf("\n1. Произведение четных элементов: %d", product);
-    
-    replaceOddIndex(arr, size);
+    int product = PolElements(arr, size);
+    Odd(arr, size);
     printf("\n2. Массив после замены элементов с нечетными индексами: ");
     printArray(arr, size);
-    
     printf("\n3. Введите число k: ");
     int k = Value();
-    int result = checkPositiveRemainder(arr, size, k);
-    
-    switch(result)
+    int result = Positive(arr, size, k);
+    if (result == 1)
     {
-        case 1:
-            printf("   Есть положительные элементы, делящиеся на %d с остатком 2", k);
-            break;
-        case 0:
-            printf("   Нет положительных элементов, делящихся на %d с остатком 2", k);
-            break;
+        printf("Есть положительные элементы, делящиеся на %d с остатком 2\n", k);
     }
-    
+    else
+    {
+        printf("Нет положительных элементов, делящихся на %d с остатком 2\n", k);
+    }
     free(arr);
     return 0;
 }
@@ -131,18 +127,19 @@ int Value()
     return value;
 }
 
-size_t getSize()
+size_t getSize(char* message)
 {
+    printf("%s",message);
     int value = Value();
     if (value <= 0)
     {
-        printf("Ошибка!");
+        printf("Ошибка!\n");
         abort();
     }
-    return (size_t)value;
+    return value;
 }
 
-void fillArray(int* arr, size_t size)
+void fillArray(int* arr,const size_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
@@ -151,7 +148,7 @@ void fillArray(int* arr, size_t size)
     }
 }
 
-void fillRandom(int* arr, size_t size)
+void fillRandom(int* arr,const size_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
@@ -159,39 +156,61 @@ void fillRandom(int* arr, size_t size)
     }
 }
 
-void printArray(int* arr, size_t size)
+void printArray(const int* arr,const size_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
         printf("%d ", arr[i]);
     }
+    printf("\n");
 }
 
-int productEven(int* arr, size_t size)
+int PolElements(const int* arr, const size_t size)
 {
-    int product = 1;
+    int product = 0;
     int found = 0;
-    
-    for (size_t i = 0; i < size; i++)
+    int i;
+    printf("Четные элементы массива: ");
+    for (i = 0; i < size; i++)
     {
-        if (arr[i] % 2 == 0)
+        if (arr[i] % 2 == 0 && arr[i] != 0)
         {
-            product = product * arr[i];
+            printf("%d ", arr[i]);
             found = 1;
         }
     }
     
-    if (found == 1)
+    if (found == 0)
     {
-        return product;
-    }
-    else
-    {
+        printf("Нет четных элементов");
         return 0;
     }
+    printf("\n");
+    printf("1. Произведение четных элементов:");
+    found = 0; 
+    for (i = 0; i < size; i++)
+    {
+        if (arr[i] % 2 == 0)
+        {
+            if (found == 0) 
+            {
+                printf("%d", arr[i]);
+                product = arr[i];
+                found = 1;
+            }
+            else 
+            {
+                printf(" * %d", arr[i]);
+                product = product * arr[i];
+            }
+        }
+    }
+    
+    printf(" = %d\n", product);
+    return product;
 }
 
-void replaceOddIndex(int* arr, size_t size)
+void Odd(int* arr,const size_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
@@ -202,7 +221,7 @@ void replaceOddIndex(int* arr, size_t size)
     }
 }
 
-int checkPositiveRemainder(int* arr, size_t size, int k)
+int Positive(const int* arr,const size_t size,const int k)
 {
     if (k == 0)
     {
