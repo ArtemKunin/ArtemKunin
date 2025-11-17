@@ -39,7 +39,7 @@ double Recurent(const int i);
  * @brief проверяет, что число положительное
  * @param value - проверяемое значение
  */
-void Positive(const double value);
+void checkPositive(const double value);
 
 /**
  * @brief Точка входа в программу
@@ -49,11 +49,11 @@ int main()
 {
     printf("Введите n:");
     int n = Value();
-    Positive(n);
+    checkPositive(n);
     printf("Сумма %d чисел последовательности равна %.4lf\n",n,SumN(n));
     printf("Введите e:");
     double e = Double();
-    Positive(e);
+    checkPositive(e);
     printf("Сумма последовательности с точностью %lf равна %.4lf\n", e,SumE(e));
 
     return 0;
@@ -98,7 +98,7 @@ double Recurent(const int i)
     return -1.0 / ((i + 1) * (i + 2));
 }
 
-void Positive(const double value)
+void checkPositive(const double value)
 {
     if (!(value > 0))
     {
