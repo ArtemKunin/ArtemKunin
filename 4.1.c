@@ -183,7 +183,7 @@ int PolElements(const int* arr, const size_t size)
     if (found == 0)
     {
         printf("Нет четных элементов");
-        return 0;
+        abort();
     }
     printf("\n");
     printf("1. Произведение четных элементов:");
