@@ -226,7 +226,7 @@ int Positive(const int* arr,const size_t size,const int k)
     if (k == 0)
     {
         printf("Ошибка: деление на ноль\n");
-        return 0;
+        abort();
     }
     
     for (size_t i = 0; i < size; i++)
