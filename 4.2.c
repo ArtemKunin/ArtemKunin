@@ -208,7 +208,7 @@ int replaceAbs(int* copyArr, const size_t size)
 {
     if (size < 2)
     {
-        return 0;
+        abort();
     }
     size_t indexMax = 0;          
     int maxAbs = abs(copyArr[0]); 
@@ -243,7 +243,7 @@ int insertK(const int* copyArr, const size_t size)
     if (count == 0)
     {
         printf("Элементов, оканчивающихся на цифру %d, нет.\n", lastDigitK);
-        return 0;
+        abort();
     }
     size_t newSize = size + 2 * count;
     int* newArr = (int*)malloc(newSize * sizeof(int));
@@ -278,7 +278,7 @@ int fromDtoA(const int* copyArr, const size_t size)
     if (size == 0)
     {
         printf("Массив D пуст, нельзя сформировать новый массив!\n");
-        return 0;
+        abort();
     }
     int* A = (int*)malloc(size * sizeof(int));
     if (A == NULL)
