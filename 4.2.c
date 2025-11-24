@@ -84,7 +84,7 @@ enum {RANDOM = 1, MANUAL};
 int main(void)
 {
     size_t size = getSize("Введите размер массива: ");
-    int* arr = (int*)malloc(size * sizeof(int));
+    int* arr = malloc(size * sizeof(int));
     if (arr == NULL)
     {
         printf("Ошибка!\n");
@@ -190,7 +190,7 @@ void fillRandom(int* arr, const size_t size)
 
 int* copyArray(const int* arr, const size_t size)
 {
-    int* copyArr = (int*)malloc(sizeof(int) * size);
+    int* copyArr = malloc(sizeof(int) * size);
     if (copyArr == NULL)
     {
         printf("Ошибка!\n");
@@ -245,7 +245,7 @@ int insertK(const int* copyArr, const size_t size)
         abort();
     }
     size_t newSize = size + 2 * count;
-    int* newArr = (int*)malloc(newSize * sizeof(int));
+    int* newArr = malloc(newSize * sizeof(int));
     if (newArr == NULL)
     {
         printf("Ошибка!\n");
@@ -279,7 +279,7 @@ int fromDtoA(const int* copyArr, const size_t size)
         printf("Массив D пуст, нельзя сформировать новый массив!\n");
         abort();
     }
-    int* A = (int*)malloc(size * sizeof(int));
+    int* A = malloc(size * sizeof(int));
     if (A == NULL)
     {
         printf("Ошибка!\n");
