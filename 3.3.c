@@ -89,7 +89,7 @@ double getDouble()
 
 void checkMM(const double min, const double max)
 {
-    if (min + DBL_EPSILON >= max)
+    if (min - DBL_EPSILON >= max)
     {
         printf("Ошибка, минимальное значение должно быть меньше максимального!\n");
         exit(1);
