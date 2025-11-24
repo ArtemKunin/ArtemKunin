@@ -182,7 +182,6 @@ void fillRandom(int* arr, const size_t size)
     printf("Введите конец диапазона случайных чисел: ");
     int end = Value();
     checkRange(start, end);
-    srand((unsigned int)time(NULL));
     for (size_t i = 0; i < size; i++)
     {
         arr[i] = (rand() % (end - start + 1)) + start;
