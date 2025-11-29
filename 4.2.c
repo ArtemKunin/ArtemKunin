@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #define scanf_s scanf  
 /**
  * @brief Считывает значение, введеное с клавиатуры с проверкой ввода
