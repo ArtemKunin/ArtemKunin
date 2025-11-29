@@ -78,7 +78,7 @@ int** delCols(int** copyArr, const size_t rows, size_t columns);
  * @brief RANDOM - заполнение массива случайными числами
  * @brief MANUAL - заполнение массива вручную.
  */
-enum { RANDOM = 1, MANUAL };
+enum {RANDOM = 1, MANUAL};
 /**
  * @brief Точка входа в программу
  * @return 0, если программа выполнена корректно
