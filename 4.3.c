@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #define scanf_s scanf
 /**
- * @brief Считывает значение, введеное с клавиатуры с проверкой ввода
+ * @brief Считывает значение, введенное с клавиатуры с проверкой ввода
  * @return Считанное значение
  */
 int Value();
@@ -15,7 +15,8 @@ size_t getSize(char* message);
 /**
  * @brief Заполнение массива с клавиатуры
  * @param arr Указатель на массив
- * @param size Размер массива
+ * @param rows Количество строк массива
+ * @param columns Количество столбцов массива
  */
 void fillArray(int** arr, const size_t rows, const size_t columns);
 /**
@@ -31,7 +32,7 @@ void printArray(int** arr, const size_t rows, const size_t columns);
  * @param rows Количество строк массива
  * @param columns Количество столбцов массива
  */
-void fillRandom(int** arr, const size_t rows,const size_t columns);
+void fillRandom(int** arr, const size_t rows, const size_t columns);
 /**
  * @brief Создаёт массив по указанным пользователем вводным данным
  * @param rows количество строк массива
@@ -44,7 +45,7 @@ int** getArray(const size_t rows, const size_t columns);
  * @param arr массив
  * @param rows количество строк массива
  */
-int** freeArray(int** arr, const size_t rows);
+void freeArray(int** arr, const size_t rows);
 /**
  * @brief Проверяет корректность диапазона случайных чисел
  * @param start Начало диапазона
@@ -60,20 +61,29 @@ void checkRange(const int start, const int end);
  */
 int** copyArray(int** arr, const size_t rows, const size_t columns);
 /**
- * @brief Заменяет минимальный по модулю элемент каждого столбца нулём и выводит массив после замены
+ * @brief Заменяет минимальный по модулю элемент каждого столбца нулём
  * @param arr Массив
  * @param rows Количество строк массива
  * @param columns Количество столбцов массива
  */
 void replaceAbs(int** arr, const size_t rows, const size_t columns);
 /**
- * @brief Удаляет столбцы, в которых первый элемент больше последнего
- * @param copyArr Массив
+ * @brief Определяет, какие столбцы нужно удалить
+ * @param arr Массив
  * @param rows Количество строк массива
  * @param columns Количество столбцов массива
- * @return Новый массив
+ * @return Количество столбцов для удаления
  */
-int** delCols(int** copyArr, const size_t rows, size_t columns);
+size_t columnsToDelete(int** arr, const size_t rows, const size_t columns);
+/**
+ * @brief Удаляет столбцы, в которых первый элемент больше последнего
+ * @param arr Исходный массив
+ * @param newArr Новый массив
+ * @param rows Количество строк массива
+ * @param columns Количество столбцов исходного массива
+ * @param newCols Количество столбцов после удаления
+ */
+void deleteColumns(int** arr, int** newArr, const size_t rows, const size_t columns, const size_t newCols);
 /**
  * @brief RANDOM - заполнение массива случайными числами
  * @brief MANUAL - заполнение массива вручную.
@@ -107,12 +117,20 @@ int main()
             freeArray(arr, rows);
             break;
     }
+    printf("Исходный массив:\n");
     printArray(arr, rows, columns);
-    int **copyArr = copyArray(arr, rows, columns);
-    replaceAbs(copyArr, rows, columns);
-    copyArr = delCols(copyArr, rows, columns);
+    int** copyArr1 = copyArray(arr, rows, columns);
+    replaceAbs(copyArr1, rows, columns);
+    printf("Массив после замены минимальных по модулю элементов нулём:\n");
+    printArray(copyArr1, rows, columns);
+    freeArray(copyArr1, rows);
+    size_t newCols = columns - columnsToDelete(arr, rows, columns);
+    int** copyArr2 = getArray(rows, newCols);
+    deleteColumns(arr, copyArr2, rows, columns, newCols);
+    printf("Результат удаления столбцов:\n");
+    printArray(copyArr2, rows, newCols);
+    freeArray(copyArr2, rows);
     freeArray(arr, rows);
-    freeArray(copyArr, rows);
     return 0;
 }
 
@@ -121,7 +139,7 @@ int Value()
     int value = 0;
     if (!scanf_s("%d", &value))
     {
-        printf("Ошибка, введено неверное значение!\n");
+        printf("Ошибка!\n");
         abort();
     }
     return value;
@@ -143,9 +161,9 @@ void fillArray(int** arr, const size_t rows, const size_t columns)
 {
     for (size_t i = 0; i < rows; i++)
     {
-        for (size_t j = 0; j<columns; j++)
+        for (size_t j = 0; j < columns; j++)
         {
-            printf("Введите a[%d,%d] = ",i,j);
+            printf("Введите a[%zu,%zu] = ", i, j);
             arr[i][j] = Value();
         }
     }
@@ -164,7 +182,7 @@ void printArray(int** arr, const size_t rows, const size_t columns)
     printf("\n");
 }
 
-void fillRandom(int** arr, const size_t rows,const size_t columns)
+void fillRandom(int** arr, const size_t rows, const size_t columns)
 {
     printf("Введите начало диапазона случайных чисел: ");
     int start = Value();
@@ -183,21 +201,31 @@ void fillRandom(int** arr, const size_t rows,const size_t columns)
 int** getArray(const size_t rows, const size_t columns)
 {
     int** arr = malloc(rows * sizeof(int*));
-    for (size_t i = 0; i<rows; i++ )
-    {
-        arr[i] = malloc(columns * sizeof(int));
-    }
     if (arr == NULL)
     {
-        printf("Ошибка выделения памяти.");
+        printf("Ошибка выделения памяти.\n");
         exit(1);
+    }
+    for (size_t i = 0; i < rows; i++)
+    {
+        arr[i] = malloc(columns * sizeof(int));
+        if (arr[i] == NULL)
+        {
+            printf("Ошибка выделения памяти.\n");
+            for (size_t j = 0; j < i; j++)
+            {
+                free(arr[j]);
+            }
+            free(arr);
+            exit(1);
+        }
     }
     return arr;
 }
 
-int** freeArray(int** arr, const size_t rows)
+void freeArray(int** arr, const size_t rows)
 {
-    for (size_t i = 0; i<rows; i++)
+    for (size_t i = 0; i < rows; i++)
     {
         free(arr[i]);
     }
@@ -206,29 +234,19 @@ int** freeArray(int** arr, const size_t rows)
 
 void checkRange(const int start, const int end)
 {
-    if(start > end)
+    if (start > end)
     {
         printf("Ошибка, конец должен быть больше начала!\n");
         exit(1);
     }
 }
 
-int** copyArray(int** arr, const size_t rows, const size_t columns) 
+int** copyArray(int** arr, const size_t rows, const size_t columns)
 {
-    int** copyArr = malloc(rows * sizeof(int*));
-    for (size_t i = 0; i<rows; i++)
+    int** copyArr = getArray(rows, columns);
+    for (size_t i = 0; i < rows; i++)
     {
-        copyArr[i] = malloc(columns * sizeof(int));
-    }
-    if (copyArr == NULL)
-    {
-        printf("Ошибка выделения памяти.");
-        freeArray(copyArr, rows);
-        exit(1);
-    }
-    for (size_t i = 0; i < rows; i++) 
-    {
-        for (size_t j = 0; j < columns; j++) 
+        for (size_t j = 0; j < columns; j++)
         {
             copyArr[i][j] = arr[i][j];
         }
@@ -253,98 +271,33 @@ void replaceAbs(int** arr, const size_t rows, const size_t columns)
         }
         arr[minIndex][j] = 0;
     }
-    printf("Массив после замены минимальных по модулю элементов нулём:\n");
-    for (size_t i = 0; i < rows; i++)
-    {
-        for (size_t j = 0; j < columns; j++)
-        {
-            printf("%5d", arr[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
 }
 
-int** delCols(int** copyArr, const size_t rows, size_t columns)
+size_t columnsToDelete(int** arr, const size_t rows, const size_t columns)
 {
-    size_t oldCols = columns;
-    size_t j, i;
-    int* keep = malloc(oldCols * sizeof(int));
-    if (keep == NULL)
+    size_t count = 0;
+    for (size_t j = 0; j < columns; j++)
     {
-        printf("Ошибка выделения памяти.\n");
-        exit(1);
-    }
-    size_t newCols = 0;
-    for (j = 0; j < oldCols; j++)
-    {
-        if (copyArr[0][j] > copyArr[rows - 1][j])
+        if (arr[0][j] > arr[rows - 1][j])
         {
-            keep[j] = 0;
-        }
-        else
-        {
-            keep[j] = 1;
-            newCols++;
+            count++;
         }
     }
-    if (newCols == 0)
+    return count;
+}
+
+void deleteColumns(int** arr, int** newArr, const size_t rows, const size_t columns, const size_t newCols)
+{
+    size_t k = 0;
+    for (size_t j = 0; j < columns; j++)
     {
-        printf("Все столбцы были удалены.\n");
-        for (i = 0; i < rows; i++)
+        if (arr[0][j] <= arr[rows - 1][j])
         {
-            free(copyArr[i]);
-        }
-        free(copyArr);
-        free(keep);
-        columns = 0;
-        exit(1);
-    }
-    int** newArr = malloc(rows * sizeof(int));
-    if (newArr == NULL)
-    {
-        printf("Ошибка выделения памяти.\n");
-        free(keep);
-        exit(1);
-    }
-    for (i = 0; i < rows; i++)
-    {
-        newArr[i] = malloc(newCols * sizeof(int));
-        if (newArr[i] == NULL)
-        {
-            printf("Ошибка выделения памяти.\n");
-            while (i > 0)
+            for (size_t i = 0; i < rows; i++)
             {
-                free(newArr[--i]);
+                newArr[i][k] = arr[i][j];
             }
-            free(newArr);
-            free(keep);
-            exit(1);
-        }
-        size_t k = 0;
-        for (j = 0; j < oldCols; j++)
-        {
-            if (keep[j] == 1)
-            {
-                newArr[i][k] = copyArr[i][j];
-                k++;
-            }
+            k++;
         }
     }
-    printf("Результат удаления столбцов:\n");
-    for (i = 0; i < rows; i++)
-    {
-        for (j = 0; j < newCols; j++)
-            printf("%5d", newArr[i][j]);
-        printf("\n");
-    }
-    printf("\n");
-    for (i = 0; i < rows; i++)
-    {
-        free(copyArr[i]);
-    }
-    free(copyArr);
-    free(keep);
-    columns = newCols;
-    return newArr;
 }
